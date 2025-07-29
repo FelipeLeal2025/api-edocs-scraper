@@ -50,7 +50,7 @@ def consultar_edocs(q: str = Query(..., description="Número do processo")):
             return {"processo": q, "custodia": "Não encontrado"}
 
         texto = elementos[0].text
-        custodia = texto.split("Sob Custódia de:")[-1].strip()
+        custodia = texto.split("Sob Custódia de: ")[-1].strip()
         return {"processo": q, "custodia": custodia}
 
     except Exception as e:
