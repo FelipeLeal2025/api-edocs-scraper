@@ -64,7 +64,7 @@
         "operation": "update",
         "boardId": "QiGIP5rl",
         "cardId": "={{ $json.id }}",
-        "customFieldId": "6887c3e7b79c7a3386ff7155",
+        "customFieldId": "6887c3fa0210ecec23167785",
         "value": {
           "text": "={{ $json.custodia }}"
         }
