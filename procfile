@@ -1,1 +1,1 @@
-web: gunicorn edocs_api_scraper:app
+web: gunicorn api_edocs_scraper:app
