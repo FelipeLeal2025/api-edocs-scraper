@@ -27,7 +27,7 @@
     },
     {
       "parameters": {
-        "functionCode": "\nreturn items.map(item => {\n  const campo = item.json.customFieldItems.find(f => f.idCustomField === '68844e843ac2f72c5693ecde');\n  const processo = campo?.value?.text || '';\n  return {\n    json: {\n      id: item.json.id,\n      processo,\n    }\n  };\n});\n"
+        "functionCode": "\nreturn items.map(item => {\n  const campo = item.json.customFieldItems.find(f => f.idCustomField === '6887c3e7b79c7a3386ff7155');\n  const processo = campo?.value?.text || '';\n  return {\n    json: {\n      id: item.json.id,\n      processo,\n    }\n  };\n});\n"
       },
       "name": "Extrair N\u00famero do Processo",
       "type": "n8n-nodes-base.function",
@@ -64,7 +64,7 @@
         "operation": "update",
         "boardId": "QiGIP5rl",
         "cardId": "={{ $json.id }}",
-        "customFieldId": "68844e843ac2f72c5693ecde",
+        "customFieldId": "6887c3e7b79c7a3386ff7155",
         "value": {
           "text": "={{ $json.custodia }}"
         }
