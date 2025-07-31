@@ -18,45 +18,30 @@ app.add_middleware(
 )
 
 @app.get("/edocs")
-def consultar_edocs(q: str = Query(..., description="Número do processo")):
-    # Configurações do Chrome para execução headless
+def get_custody_info(q: str = Query(..., description="Número do processo")):
     options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(options=options)
+    driver.get("https://e-docs.es.gov.br")
 
     try:
-        # Acessa a página de login do Acesso Cidadão
-        driver.get("https://login.acessocidadao.es.gov.br/Entrar?urlRetorno=https%3A%2F%2Fe-docs.es.gov.br%2F")
+        search_input = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "q"))
+        )
+        search_input.send_keys(q)
+        search_input.submit()
 
-        # Aguarda os campos carregarem e faz o login
-        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "CpfOuEmail"))).send_keys("03491959780")
-        driver.find_element(By.ID, "Senha").send_keys("Le4l0317!")
-        driver.find_element(By.ID, "btnEntrar").click()
-
-        # Aguarda redirecionamento para o EDOCS
-        WebDriverWait(driver, 20).until(EC.url_contains("e-docs.es.gov.br"))
-
-        # Acessa diretamente a página de consulta de processos
-        driver.get("https://e-docs.es.gov.br/processo/entrada")
-
-        # Aguarda o campo de busca e realiza a consulta
-        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "q"))).send_keys(q)
-        driver.find_element(By.ID, "onmi-lupa").click()
-
-        # Aguarda carregamento dos dados
-        WebDriverWait(driver, 20).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "destaque-sob-custodia"))
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Sob Custódia de:')]"))
         )
 
-        # Extrai a custódia
-        custodia_element = driver.find_element(By.CLASS_NAME, "destaque-sob-custodia")
-        custodia_text = custodia_element.text.strip()
-        return {"processo": q, "sob_custodia_de": custodia_text}
-
+        element = driver.find_element(By.XPATH, "//*[contains(text(), 'Sob Custódia de:')]/following-sibling::*")
+        result = element.text
     except Exception as e:
-        return {"erro": str(e)}
-
+        result = f"Erro ao buscar custódia: {e}"
     finally:
         driver.quit()
+
+    return {"custodia": result}
